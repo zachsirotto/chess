@@ -1,5 +1,12 @@
 # chess
 
+### Setup
+
+### Development Mode
+
+```bash
+nodemon --exec pipenv run python __init__.py
+```
 
 ## Contribution Guidelines
 
