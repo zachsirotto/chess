@@ -1,13 +1,11 @@
-import chess
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QApplication
+from src.views.main import MainWindow
 
-
-board = chess.Board()
 
 app = QApplication([])
 
-window = QMainWindow()
+window = MainWindow()
 window.show()
 
 app.exec_()
