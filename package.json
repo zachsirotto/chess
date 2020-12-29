@@ -1,17 +1,18 @@
 {
-    "name": "chess",
-    "version": "0.0.1",
-    "description": "A chess game :)",
-    "repository": "git@github.com:zachsirotto/chess.git",
-    "author": "Zach-Sirotto <zach.sirotto@ibm.com>",
-    "license": "MIT",
-    "devDependencies": {
-      "devmoji": "^2.1.13",
-      "husky": "^4.3.5"
-    },
-    "husky": {
-      "hooks": {
-        "prepare-commit-msg": "devmoji -e --lint"
-      }
+  "name": "chess",
+  "version": "0.0.1",
+  "description": "A chess game :)",
+  "repository": "git@github.com:zachsirotto/chess.git",
+  "author": "Zach-Sirotto <zach.sirotto@ibm.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "devmoji": "^2.1.13",
+    "husky": "^4.3.5",
+    "nodemon": "^2.0.6"
+  },
+  "husky": {
+    "hooks": {
+      "prepare-commit-msg": "devmoji -e --lint"
     }
   }
+}
