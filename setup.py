@@ -6,7 +6,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 setuptools.setup(
     name="chess",
     version="0.0.1",
-    author="Zach Sirott",
+    author="Zach Sirotto",
     author_email="zach.sirotto@ibm.com",
     description="A chess game :)",
     long_description=long_description,
