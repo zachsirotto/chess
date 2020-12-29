@@ -8,6 +8,11 @@
 nodemon --exec pipenv run python __init__.py
 ```
 
+## Future Plans
+
+- Move Analysis
+- Neural Network: https://github.com/CSSLab/maia-chess
+
 ## Contribution Guidelines
 
 This repository follows [conventional commits](https://www.conventionalcommits.org/), meaning commit messages should be structured as follows:
