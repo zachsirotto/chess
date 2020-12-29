@@ -35,9 +35,9 @@ To add emojis automatically to commit messages, setup the pre-commit hook for th
 <summary>Click to see one-time setup</summary>
 
 1. Install [yarn](https://classic.yarnpkg.com/en/docs/install) or [npm](https://www.npmjs.com/get-npm)
-2. Clone the jnlp repo
+2. Clone this repo
     ```
-    clone git@github.ibm.com:watson-ai-security/jnlp-agent.git
+    https://github.com/zachsirotto/chess.git
     ```
 3. Run `yarn install` or `npm install`
 
