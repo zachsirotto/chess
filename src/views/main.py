@@ -20,8 +20,8 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("chess")
         self.board = chess.Board()
         self.boardWidget = QSvgWidget(parent=self)
-        self.grid = QWidget(parent=self.boardWidget)
-        self.grid.setGeometry(QRect(self.margin, self.margin, cbSize, cbSize))
+        # self.grid = QWidget(parent=self)
+        # self.grid.setGeometry(QRect(self.margin, self.margin, cbSize, cbSize))
         self.createGrid()
         self.coordinates = True
         self.boardWidget.load(chess.svg.board(
@@ -31,7 +31,7 @@ class MainWindow(QMainWindow):
 
         # Set the central widget of the Window. Widget will expand
         # to take up all the space in the window by default.
-        self.setCentralWidget(self.grid)
+        self.setCentralWidget(self.boardWidget)
 
     def createGrid(self):
         dimensions = self.geometry()
@@ -48,7 +48,7 @@ class MainWindow(QMainWindow):
                 self.squares[i][j] = Square(i * 8 + j, self.squareSize)
                 # self.squares[i][j].setGeometry(bt_w * j, bt_h * i, bt_w, bt_h)
                 layout.addWidget(self.squares[i][j], i, j)
-        self.grid.setLayout(layout)
+        self.boardWidget.setLayout(layout)
         # windowLayout = QVBoxLayout()
         # windowLayout.addWidget(self.groupBox)
         # self.setLayout(windowLayout)
