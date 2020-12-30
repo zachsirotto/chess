@@ -37,8 +37,8 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(boardSvg)
 
     def mousePressEvent(self, QMouseEvent):
-        print(QMouseEvent.pos())
-
-    def mouseReleaseEvent(self, QMouseEvent):
-        cursor = QCursor()
-        print(cursor.pos())
+        pos = QMouseEvent.pos()
+        dimensions = self.geometry()
+        # print(pos % dimensions.width)
+        # print(dimensions.width() / 8 - dimensions.width() / 8 / 3)
+        print(pos)
