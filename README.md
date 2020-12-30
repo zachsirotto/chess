@@ -1,52 +1,41 @@
 # chess
 
-## Development
-
-### Setup
+## Setup nodemon and pre-commit hooks
 
 1. Install [yarn](https://classic.yarnpkg.com/en/docs/install) or [npm](https://www.npmjs.com/get-npm)
-2. Clone this repo
-    ```
-    https://github.com/zachsirotto/chess.git
-    ```
+2. Clone this repo, `git clone https://github.com/zachsirotto/chess.git`
 3. Run `yarn install` or `npm install`
 
-### Usage
+## Install python
 
-```bash
-nodemon --exec pipenv run python __init__.py
-```
+**If you do not have >= Python 3.9.x**, install [pyenv](https://github.com/pyenv/pyenv) with the [easy-installer](https://github.com/pyenv/pyenv-installer#install), then install a Python version >= `3.9.x`.
 
-## Production
+## Install dependencies
 
-### Setup
+Use either pip or pipenv to install dependencies from `setup.py` from within the cloned repository. i.e. `cd chess`
 
-Use either pip or pipenv to install dependencies from `setup.py`.
+## [Pipenv (recommended)](https://github.com/pypa/pipenv)
 
-#### [Pipenv (recommended)](https://github.com/pypa/pipenv)
-
-```bash
-pipenv install -e .
-```
+Run `pipenv install -e .` to install dependencies using pipenv within a virtualenv.
 
 #### Pip (less recommended)
 
-```bash
-pip install .
-```
+Run `pip install .` to install dependencies to your global pip package list.
 
-### Usage
+### Run and watch for file changes
 
-```bash
-python __init__.py
-```
+`nodemon --exec pipenv run python __init__.py`
 
-## Future Plans
+### Run without watching for file changes
+
+`python __init__.py`
+
+## Future plans
 
 - Move Analysis
 - Neural Network: https://github.com/CSSLab/maia-chess
 
-## Contribution Guidelines
+## Contribution guidelines
 
 This repository follows [conventional commits](https://www.conventionalcommits.org/), meaning commit messages should be structured as follows:
 
