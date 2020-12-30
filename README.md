@@ -18,7 +18,7 @@ Use either pip or pipenv to install dependencies from `setup.py` from within the
 
 Run `pipenv install -e .` to install dependencies using pipenv within a virtualenv.
 
-## Pip (less recommended)
+### Pip (less recommended)
 
 Run `pip install .` to install dependencies to your global pip package list.
 
