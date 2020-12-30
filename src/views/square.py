@@ -5,6 +5,7 @@ from PyQt5.Qt import Qt
 
 class Square(QPushButton):
     def __init__(self, pos, sz):
+        # TODO: uncomment the comment below to make buttons invisible
         super(Square, self).__init__('')  # , flat=True)
         self.pos = pos
         self.setMinimumWidth(sz)

@@ -2,14 +2,14 @@ import chess
 import chess.svg
 from PyQt5.QtSvg import QSvgWidget
 from PyQt5.QtWidgets import QMainWindow, QGridLayout, QWidget  # , QTabWidget
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QRect
 from PyQt5.QtGui import QCursor
 from .square import Square
 
 svgX = 50                          # top left x-pos of chessboard
 svgY = 50                          # top left y-pos of chessboard
 cbSize = 600                       # size of chessboard
-margin = 0.05 * cbSize
+margin = 0.025 * cbSize
 #  if self.coordinates == True else 0
 squareSize = (cbSize - 2 * margin) / 8.0
 
@@ -19,12 +19,10 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__(*args, **kwargs)
         self.squares = [[0] * 8] * 8
         self.setWindowTitle("chess")
-
         self.board = chess.Board()
-
-        # self.mainWidget = QTabWidget(self)
         self.boardWidget = QSvgWidget(parent=self)
         self.grid = QWidget(parent=self)
+        self.grid.setGeometry(QRect(margin, margin, cbSize, cbSize))
         # self.grid.move(1, 1)
         # self.groupBox = QGroupBox('grid')
         self.createGrid()
@@ -32,7 +30,7 @@ class MainWindow(QMainWindow):
         self.coordinates = True
 
         self.boardWidget.load(chess.svg.board(
-            self.board, size=350).encode('utf8'))
+            self.board, size=cbSize).encode('utf8'))
 
         # self.boardWidget.setGeometry(100, 100, 759, 668)
 
@@ -55,7 +53,7 @@ class MainWindow(QMainWindow):
         # bt_w = dimensions.width() / 8 - dimensions.width() / 26
         # bt_h = dimensions.height() / 8 - dimensions.height() / 26
         layout = QGridLayout()
-        layout.setGeometry(50, 50, cbSize, cbSize)
+        # layout.setGeometry(QRect(svgx, svgY, cbSize, cbSize))
         # layout.setContentsMargins(0, 0, 0, 0)
         layout.setHorizontalSpacing(0)
         layout.setVerticalSpacing(0)
@@ -65,7 +63,7 @@ class MainWindow(QMainWindow):
                 self.squares[i][j] = Square(i * 8 + j, squareSize)
                 # self.squares[i][j].setGeometry(bt_w * j, bt_h * i, bt_w, bt_h)
                 layout.addWidget(self.squares[i][j], i, j)
-        self.boardWidget.setLayout(layout)
+        self.grid.setLayout(layout)
         # windowLayout = QVBoxLayout()
         # windowLayout.addWidget(self.groupBox)
         # self.setLayout(windowLayout)
