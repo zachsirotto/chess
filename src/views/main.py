@@ -3,6 +3,7 @@ import chess.svg
 from PyQt5.QtSvg import QSvgWidget
 from PyQt5.QtWidgets import QMainWindow  # QLabel
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QCursor
 
 # Subclass QMainWindow to customise your application's main window
 
@@ -34,3 +35,10 @@ class MainWindow(QMainWindow):
         # Set the central widget of the Window. Widget will expand
         # to take up all the space in the window by default.
         self.setCentralWidget(boardSvg)
+
+    def mousePressEvent(self, QMouseEvent):
+        print(QMouseEvent.pos())
+
+    def mouseReleaseEvent(self, QMouseEvent):
+        cursor = QCursor()
+        print(cursor.pos())
