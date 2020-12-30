@@ -39,7 +39,7 @@ class MainWindow(QMainWindow):
     def mousePressEvent(self, QMouseEvent):
         # https://doc.qt.io/qt-5/qmouseevent.html
         pos = QMouseEvent.pos()
-        # https://doc.qt.io/archives/qt-4.8/qrect.html
+        # https://doc.qt.io/qt-5/qrect.html
         dimensions = self.geometry()
         # print(pos % dimensions.width)
         # print(dimensions.width() / 8 - dimensions.width() / 8 / 3)
