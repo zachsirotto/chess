@@ -28,7 +28,7 @@ Run `pip install .` to install dependencies to your global pip package list.
 
 ## Run without watching for file changes
 
-`python __init__.py`
+`pipenv run python __init__.py`
 
 ## Future plans
 
