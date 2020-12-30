@@ -14,19 +14,19 @@
 
 Use either pip or pipenv to install dependencies from `setup.py` from within the cloned repository. i.e. `cd chess`
 
-## [Pipenv (recommended)](https://github.com/pypa/pipenv)
+### [Pipenv (recommended)](https://github.com/pypa/pipenv)
 
 Run `pipenv install -e .` to install dependencies using pipenv within a virtualenv.
 
-#### Pip (less recommended)
+## Pip (less recommended)
 
 Run `pip install .` to install dependencies to your global pip package list.
 
-### Run and watch for file changes
+## Run and watch for file changes
 
 `nodemon --exec pipenv run python __init__.py`
 
-### Run without watching for file changes
+## Run without watching for file changes
 
 `python __init__.py`
 
