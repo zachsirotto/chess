@@ -54,6 +54,8 @@ class MainWindow(QMainWindow):
         return squareWidth, squareHeight
 
     def getRankAndFile(self, event):
+        sqWidth, sqHeight = self.squareSize()
+        marginX, marginY = self.marginSize()
         file = int((event.x() - marginX) / sqWidth)
         rank = 7 - int((event.y() - marginY) / sqHeight)
         return file, rank
@@ -66,14 +68,18 @@ class MainWindow(QMainWindow):
             check=self.checkSquares
         ).encode("utf8"))
 
-    def mousePressEvent(self, event):
+    def onBoard(self, event):
         cbWidth, cbHeight = self.cbSize()
-        sqWidth, sqHeight = self.squareSize()
         marginX, marginY = self.marginSize()
+        onX = (marginX <= event.x() <= cbWidth - marginX)
+        onY = (marginY <= event.y() <= cbHeight - marginY)
+        return onX and onY
+
+    def mousePressEvent(self, event):
         if event.buttons() == Qt.LeftButton:
-            if marginX <= event.x() <= cbWidth - marginX and marginY <= event.y() <= cbHeight - marginY:
-                file, rank = self.getRankAndFile(self, event)
+            if self.onBoard(event):
                 # chess.sqare.mirror() if white is on top
+                file, rank = self.getRankAndFile(event)
                 # if sq already selected, make a move
                 if self.sqSelected:
                     # reselect piece if necessary
