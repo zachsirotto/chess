@@ -1,56 +1,76 @@
 import chess
 import chess.svg
+from math import floor
 from PyQt5.QtSvg import QSvgWidget
-from PyQt5.QtWidgets import QMainWindow, QGridLayout  # , QWidget
-from PyQt5.QtCore import Qt, QRect
+from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor
-from .square import Square
-
-svgX = 50                          # top left x-pos of chessboard
-svgY = 50                          # top left y-pos of chessboard
-cbSize = 600                       # size of chessboard
 
 
 class MainWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
-        self.margin = 0.025 * cbSize
-        self.squareSize = (cbSize - 2 * self.margin) / 8.0
+        self.defaultSize = 500                  # size of chessboard
         self.squares = [[0] * 8] * 8
         self.setWindowTitle("chess")
         self.board = chess.Board()
         self.boardWidget = QSvgWidget(parent=self)
-        # self.grid = QWidget(parent=self)
-        # self.grid.setGeometry(QRect(self.margin, self.margin, cbSize, cbSize))
-        self.createGrid()
-        self.coordinates = True
+        self.currentPlayer = chess.WHITE
+        self.sqSelected = None
+        self.pieceSelected = None
         self.boardWidget.load(chess.svg.board(
-            self.board, size=cbSize).encode('utf8'))
-        self.boardWidget.setGeometry(svgX, svgY, cbSize, cbSize)
+            self.board, size=self.cbSize).encode('utf8'))
+        self.boardWidget.setGeometry(0, 0, self.defaultSize, self.defaultSize)
         self.boardWidget.show()
-
-        # Set the central widget of the Window. Widget will expand
-        # to take up all the space in the window by default.
         self.setCentralWidget(self.boardWidget)
 
-    def createGrid(self):
-        dimensions = self.geometry()
-        # bt_w = dimensions.width() / 8 - dimensions.width() / 26
-        # bt_h = dimensions.height() / 8 - dimensions.height() / 26
-        layout = QGridLayout()
-        # layout.setGeometry(QRect(svgx, svgY, cbSize, cbSize))
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(0)
-        # layout.setHorizontalSpacing(0)
-        # layout.setVerticalSpacing(0)
-        for i in range(8):
-            # layout.setRowMinimumHeight(i, self.squareSize)
-            for j in range(8):
-                self.squares[i][j] = Square(i * 8 + j, self.squareSize)
-                # self.squares[i][j].setGeometry(bt_w * j, bt_h * i, bt_w, bt_h)
-                layout.addWidget(self.squares[i][j], i, j)
-        self.boardWidget.setLayout(layout)
+    def changeTurns(self):
+        self.currentPlayer = not self.currentPlayer
+
+    def cbSize(self):
+        return self.width(), self.height()
+
+    def marginSize(self):
+        cbWidth, cbHeight = self.cbSize()
+        return floor(1/24 * cbWidth), floor(1/24 * cbHeight)
+
+    def squareSize(self):
+        cbWidth, cbHeight = self.cbSize()
+        marginX, marginY = self.marginSize()
+        squareWidth = (cbWidth - (2 * marginX)) / 8.0
+        squareHeight = (cbHeight - (2 * marginY)) / 8.0
+        return squareWidth, squareHeight
 
     def paintEvent(self, event):
         self.boardWidget.load(chess.svg.board(
-            self.board, size=cbSize, coordinates=self.coordinates).encode("utf8"))
+            self.board, size=self.cbSize).encode("utf8"))
+
+    def mousePressEvent(self, event):
+        cbWidth, cbHeight = self.cbSize()
+        sqWidth, sqHeight = self.squareSize()
+        marginX, marginY = self.marginSize()
+        if event.buttons() == Qt.LeftButton:
+            if marginX <= event.x() <= cbWidth - marginX and marginY <= event.y() <= cbHeight - marginY:
+                x = int((event.x() - marginX) / sqWidth)
+                y = 7 - int((event.y() - marginY) / sqHeight)
+                # chess.sqare.mirror() if white is on top
+                # if sq already selected, make a move
+                if self.sqSelected:
+                    print("attempt to make move")
+                    self.board.push(chess.Move(
+                        from_square=self.sqSelected,
+                        to_square=chess.square(x, y)  # ,
+                        # promotion=self.pieceSelected
+                    ))
+                    self.sqSelected, pieceSelected = None, None
+                    self.changeTurns()
+                    self.update()
+                # sq is not selected yet
+                else:
+                    # get square number
+                    self.sqSelected = chess.square(x, y)
+                    # if current player's piece is not on square, do not select piece
+                    # if self.board.piece_at(square).belongsToCurrentPlayer():
+                    # find and select square
+                    self.pieceSelected = self.board.piece_at(self.sqSelected)
+                print(x, y)
