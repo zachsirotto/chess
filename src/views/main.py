@@ -1,10 +1,16 @@
 import chess
 import chess.svg
+from src.controllers import click
 from math import floor
 from PyQt5.QtSvg import QSvgWidget
-from PyQt5.QtWidgets import QMainWindow
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QCursor
+from PyQt5.QtWidgets import (
+    QMainWindow,
+    QToolButton,
+    QAction,
+    QMenuBar,
+    QMenu,
+    QToolBar)
+from PyQt5.QtGui import QCursor, QIcon
 
 
 class MainWindow(QMainWindow):
@@ -24,6 +30,25 @@ class MainWindow(QMainWindow):
             self.board, size=self.cbSize).encode('utf8'))
         self.boardWidget.setGeometry(0, 0, self.defaultSize, self.defaultSize)
         self.boardWidget.show()
+
+        # add menu bar
+        self.menuBar = QMenuBar()
+        self.menuBar.setNativeMenuBar(True)
+        self.fileMenu = QMenu("&File", self)
+        self.fileMenu.addAction("New")
+        self.menuBar.addMenu(self.fileMenu)
+        self.setMenuBar(self.menuBar)
+
+        # add toolbar
+        self.toolBar = QToolBar()
+        self.toolBar.setMovable(False)
+        toolButton = QToolButton()
+        toolButton.setText("Apple")
+        toolButton.setCheckable(True)
+        toolButton.setAutoExclusive(True)
+        self.toolBar.addWidget(toolButton)
+        self.addToolBar(self.toolBar)
+
         self.setCentralWidget(self.boardWidget)
 
     def changeTurns(self):
@@ -45,6 +70,7 @@ class MainWindow(QMainWindow):
         self.sqSelected = square
         self.pieceSelected = self.board.piece_at(
             self.sqSelected)
+        self.update()
 
     def squareSize(self):
         cbWidth, cbHeight = self.cbSize()
@@ -83,38 +109,4 @@ class MainWindow(QMainWindow):
         return onX and onY
 
     def mousePressEvent(self, event):
-        if event.buttons() == Qt.LeftButton:
-            if self.onBoard(event):
-                # chess.sqare.mirror() if white is on top
-                file, rank = self.getRankAndFile(event)
-                # if sq already selected, make a move
-                if self.sqSelected:
-                    # reselect piece if necessary
-                    square, piece = self.getSquareAndPiece(file, rank)
-                    if piece and piece.color == self.currentPlayer:
-                        self.setSquareAndPiece(square)
-                        return
-                    move = chess.Move(
-                        from_square=self.sqSelected,
-                        to_square=square  # ,
-                        # promotion=self.pieceSelected
-                    )
-                    # if move is legal
-                    if move in self.board.legal_moves:
-                        self.board.push(move)
-                        self.sqSelected, pieceSelected = None, None
-                        self.changeTurns()
-                        self.lastMove = move
-                        # get check squares if move puts king in check
-                        if self.board.is_check():
-                            self.checkSquares = self.board.checkers()
-                        else:
-                            self.checkSquares = []
-                        self.update()
-                # sq is not selected yet
-                else:
-                    square, piece = self.getSquareAndPiece(file, rank)
-                    # only select current player's pieces
-                    if piece and piece.color == self.currentPlayer:
-                        self.setSquareAndPiece(square)
-                print(file, rank)
+        click.mouseClick(self, event)
