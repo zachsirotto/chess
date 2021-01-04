@@ -65,7 +65,14 @@ class MainWindow(QMainWindow):
             self.board,
             size=self.cbSize,
             lastmove=self.lastMove,
-            check=self.checkSquares
+            check=self.checkSquares,
+            squares=chess.SquareSet.from_square(
+                self.sqSelected) if self.sqSelected else chess.SquareSet()  # ,
+            # selected=self.sqSelected  # ,
+            # colors={
+            #     'square light lastmove': '#ffce9e99',
+            #     'square dark lastmove': '#d18b4799'
+            # }
         ).encode("utf8"))
 
     def onBoard(self, event):
