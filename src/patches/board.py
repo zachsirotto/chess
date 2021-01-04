@@ -72,7 +72,7 @@ def _board(board: Optional[chess.BaseBoard] = None, *,
 
     squares = chess.SquareSet(squares) if squares else chess.SquareSet()
     if squares:
-        defs.append(ET.fromstring(XX))
+        defs.append(ET.fromstring(chess.svg.XX))
 
     if check is not None:
         defs.append(ET.fromstring(chess.svg.CHECK_GRADIENT))
