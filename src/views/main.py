@@ -2,6 +2,7 @@ import chess
 import chess.svg
 from src.controllers import click
 from math import floor
+from PyQt5.QtCore import Qt
 from PyQt5.QtSvg import QSvgWidget
 from PyQt5.QtWidgets import (
     QMainWindow,
@@ -9,13 +10,17 @@ from PyQt5.QtWidgets import (
     QAction,
     QMenuBar,
     QMenu,
-    QToolBar)
+    QToolBar,
+    QPlainTextEdit
+)
 from PyQt5.QtGui import QCursor, QIcon
 
 
 class MainWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
+        self.MOVE_LIST_SIZE = 95
+        self.TOOLBAR_SIZE = 20
         self.defaultSize = 500
         self.squares = [[0] * 8] * 8
         self.setWindowTitle("chess")
@@ -33,29 +38,55 @@ class MainWindow(QMainWindow):
 
         # add menu bar
         self.menuBar = QMenuBar()
+        self.__initMenu()
+
+        # add toolbars
+        # self.toolBar = QToolBar()
+        self.rightToolBar = QToolBar()
+        self.__initToolbar()
+
+        # init move list
+        self.__initMoveList()
+
+        # set board as central widget for resizing
+        self.setCentralWidget(self.boardWidget)
+
+    def __initMenu(self):
         self.menuBar.setNativeMenuBar(True)
         self.fileMenu = QMenu("&File", self)
         self.fileMenu.addAction("New")
         self.menuBar.addMenu(self.fileMenu)
         self.setMenuBar(self.menuBar)
 
-        # add toolbar
-        self.toolBar = QToolBar()
-        self.toolBar.setMovable(False)
-        toolButton = QToolButton()
-        toolButton.setText("Apple")
-        toolButton.setCheckable(True)
-        toolButton.setAutoExclusive(True)
-        self.toolBar.addWidget(toolButton)
-        self.addToolBar(self.toolBar)
+    def __initToolbar(self):
+        # init top toolbar
+        # self.toolBar.setMovable(False)
+        # toolButton = QToolButton()
+        # toolButton.setText("Apple")
+        # toolButton.setCheckable(True)
+        # toolButton.setAutoExclusive(True)
+        # self.toolBar.setFixedHeight(self.TOOLBAR_SIZE)
+        # self.toolBar.addWidget(toolButton)
+        # self.addToolBar(self.toolBar)
+        # init right toolbar
+        self.rightToolBar.setOrientation(Qt.Vertical)
+        self.rightToolBar.setMovable(False)
+        self.rightToolBar.setFixedWidth(self.MOVE_LIST_SIZE)
+        self.addToolBar(Qt.RightToolBarArea, self.rightToolBar)
 
-        self.setCentralWidget(self.boardWidget)
+    def __initMoveList(self):
+        self.moveList = QPlainTextEdit()
+        self.moveList.setCursorWidth(0)
+        self.moveList.setPlaceholderText('No moves yet')
+        self.moveList.setReadOnly(True)
+        self.rightToolBar.addWidget(self.moveList)
 
     def changeTurns(self):
         self.currentPlayer = not self.currentPlayer
 
+    # currently returns window size, will have to change if we add a toolbar
     def cbSize(self):
-        return self.width(), self.height()
+        return self.width() - self.MOVE_LIST_SIZE, self.height()  # - self.TOOLBAR_SIZE
 
     def marginSize(self):
         cbWidth, cbHeight = self.cbSize()
@@ -66,10 +97,10 @@ class MainWindow(QMainWindow):
         piece = self.board.piece_at(square)
         return square, piece
 
-    def setSquareAndPiece(self, square):
+    def setSquareAndPiece(self, square, piece):
         self.sqSelected = square
-        self.pieceSelected = self.board.piece_at(
-            self.sqSelected)
+        # self.pieceSelected = self.board.piece_at(
+        #     self.sqSelected)
         self.update()
 
     def squareSize(self):

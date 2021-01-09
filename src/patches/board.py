@@ -17,6 +17,7 @@ def _board(board: Optional[chess.BaseBoard] = None, *,
            coordinates: bool = True,
            colors: Dict[str, str] = {},
            flipped: bool = False,
+           selected: Optional[Square] = None,
            style: Optional[str] = None) -> str:
     """
     Renders a board with pieces and/or selected squares as an SVG image.
@@ -40,6 +41,7 @@ def _board(board: Optional[chess.BaseBoard] = None, *,
         ``arrow blue``, ``arrow red``, and ``arrow yellow``. Values should look
         like ``#ffce9e`` (opaque), or ``#15781B80`` (transparent).
     :param flipped: Pass ``True`` to flip the board.
+    :param selected: Pass selected ``Square`` to draw border around square.
     :param style: A CSS stylesheet to include in the SVG image.
 
     >>> import chess
@@ -85,7 +87,7 @@ def _board(board: Optional[chess.BaseBoard] = None, *,
             "width": 2 * margin + 8 * chess.svg.SQUARE_SIZE,
             "height": 2 * margin + 8 * chess.svg.SQUARE_SIZE,
             "fill": margin_color,
-            "opacity": margin_opacity if margin_opacity < 1.0 else None,
+            "opacity": margin_opacity if margin_opacity < 1.0 else None
         }))
 
     for square, bb in enumerate(chess.BB_SQUARES):
@@ -110,11 +112,15 @@ def _board(board: Optional[chess.BaseBoard] = None, *,
             "width": chess.svg.SQUARE_SIZE,
             "height": chess.svg.SQUARE_SIZE,
             "class": " ".join(cls),
-            "stroke": "none",
+            # "stroke": "green" if selected == square else 'black',
+            # "vector-effect": "non-scaling-stroke",
+            # "stroke-alignment": 'inner',
             "fill": fill_color,
+            # "stroke-width": 0.1 * chess.svg.SQUARE_SIZE if selected == square else "0.5%",
             "opacity": fill_opacity if fill_opacity < 1.0 else None,
         }))
 
+        # render check gradients
         if check and square in check:
             ET.SubElement(svg, "rect", chess.svg._attrs({
                 "x": x,
@@ -125,13 +131,15 @@ def _board(board: Optional[chess.BaseBoard] = None, *,
                 "fill": "url(#check_gradient)",
             }))
 
+        # render selected piece
+
         # Render pieces.
         if board is not None:
             piece = board.piece_at(square)
             if piece:
                 ET.SubElement(svg, "use", {
                     "xlink:href": f"#{chess.COLOR_NAMES[piece.color]}-{chess.PIECE_NAMES[piece.piece_type]}",
-                    "transform": f"translate({x:d}, {y:d})",
+                    "transform": f"translate({x:d}, {y:d})"
                 })
 
         # Render selected squares.
