@@ -3,38 +3,42 @@ import chess.svg
 from PyQt5.QtCore import Qt
 
 
-def mouseClick(main, event):
-    if event.buttons() == Qt.LeftButton:
-        if main.onBoard(event):
+def mouseClick(self, event):
+    if event.buttons() in [Qt.LeftButton, Qt.RightButton]:
+        if self.onBoard(event):
             # chess.sqare.mirror() if white is on top
-            file, rank = main.getRankAndFile(event)
-            # if sq already selected, make a move
-            if main.sqSelected:
+            file, rank = self.getRankAndFile(event)
+            # if sq already selected
+            if self.sqSelected:
                 # reselect piece if necessary
-                square, piece = main.getSquareAndPiece(file, rank)
-                if piece and piece.color == main.currentPlayer:
-                    main.setSquareAndPiece(square)
+                square, piece = self.getSquareAndPiece(file, rank)
+                if piece and piece.color == self.currentPlayer:
+                    self.setSquareAndPiece(square, piece)
                     return
+                # make a move
                 move = chess.Move(
-                    from_square=main.sqSelected,
+                    from_square=self.sqSelected,
                     to_square=square  # ,
-                    # promotion=main.pieceSelected
+                    # promotion=self.pieceSelected
                 )
                 # if move is legal
-                if move in main.board.legal_moves:
-                    main.board.push(move)
-                    main.sqSelected, pieceSelected = None, None
-                    main.changeTurns()
-                    main.lastMove = move
+                if move in self.board.legal_moves:
+                    self.board.push(move)
+                    self.sqSelected, self.pieceSelected = None, None
+                    self.changeTurns()
+                    self.lastMove = move
                     # get check squares if move puts king in check
-                    if main.board.is_check():
-                        main.checkSquares = main.board.checkers()
+                    if self.board.is_check():
+                        self.checkSquares = self.board.checkers()
                     else:
-                        main.checkSquares = []
-                    main.update()
+                        self.checkSquares = []
+                    self.update()
             # sq is not selected yet
             else:
-                square, piece = main.getSquareAndPiece(file, rank)
+                square, piece = self.getSquareAndPiece(file, rank)
                 # only select current player's pieces
-                if piece and piece.color == main.currentPlayer:
-                    main.setSquareAndPiece(square)
+                if piece and piece.color == self.currentPlayer:
+                    self.setSquareAndPiece(square, piece)
+                # print(piece, square, piece.color, self.currentPlayer)
+            # print(self.sqSelected)
+            print(file, rank)
