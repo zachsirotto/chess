@@ -30,6 +30,8 @@ def mouseClick(self, event):
                     # get check squares if move puts king in check
                     if self.board.is_check():
                         self.checkSquares = self.board.checkers()
+                        self.checkSquares.add(
+                            self.board.king(self.currentPlayer))
                     else:
                         self.checkSquares = []
                     self.update()
