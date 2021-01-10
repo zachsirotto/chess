@@ -1,6 +1,6 @@
 import chess
 import chess.svg
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QRect, QPoint
 
 
 def mouseClick(self, event):
@@ -31,6 +31,8 @@ def mouseClick(self, event):
                     )
                 # if move is legal
                 if move in self.board.legal_moves:
+                    # make move
+                    self.updateMoveList(move)
                     self.board.push(move)
                     self.sqSelected, self.pieceSelected = None, None
                     self.changeTurns()
@@ -46,9 +48,5 @@ def mouseClick(self, event):
             # sq is not selected yet
             else:
                 square, piece = self.getSquareAndPiece(file, rank)
-                # only select current player's pieces
                 if piece and piece.color == self.currentPlayer:
                     self.setSquareAndPiece(square, piece)
-                # print(piece, square, piece.color, self.currentPlayer)
-            # print(self.sqSelected)
-            print(file, rank)

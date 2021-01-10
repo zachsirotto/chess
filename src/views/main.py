@@ -1,6 +1,7 @@
 import chess
 import chess.svg
 from src.controllers import click
+from src.views.promotion import MyPopup
 from math import floor
 from PyQt5.QtCore import Qt
 from PyQt5.QtSvg import QSvgWidget
@@ -11,9 +12,9 @@ from PyQt5.QtWidgets import (
     QMenuBar,
     QMenu,
     QToolBar,
-    QPlainTextEdit
+    QTextEdit
 )
-from PyQt5.QtGui import QCursor, QIcon
+from PyQt5.QtGui import QCursor, QIcon, QKeySequence
 
 
 class MainWindow(QMainWindow):
@@ -30,6 +31,7 @@ class MainWindow(QMainWindow):
         self.sqSelected = None
         self.pieceSelected = None
         self.lastMove = None
+        self.promotionWindow = MyPopup()
         self.checkSquares = []
         self.boardWidget.load(chess.svg.board(
             self.board, size=self.cbSize).encode('utf8'))
@@ -46,6 +48,7 @@ class MainWindow(QMainWindow):
         self.__initToolbar()
 
         # init move list
+        self.moveList = QTextEdit()
         self.__initMoveList()
 
         # set board as central widget for resizing
@@ -53,9 +56,17 @@ class MainWindow(QMainWindow):
 
     def __initMenu(self):
         self.menuBar.setNativeMenuBar(True)
-        self.fileMenu = QMenu("&File", self)
+        self.fileMenu = QMenu("&File")
         self.fileMenu.addAction("New")
+        self.fileMenu.addAction("Save")
+        self.fileMenu.addAction("Load")
         self.menuBar.addMenu(self.fileMenu)
+        self.gameMenu = QMenu("&Game")
+        self.undoAction = QAction("Undo")
+        self.undoAction.setShortcut(QKeySequence("CTRL+Z"))
+        self.undoAction.triggered.connect(self.undoMove)
+        self.gameMenu.addAction(self.undoAction)
+        self.menuBar.addMenu(self.gameMenu)
         self.setMenuBar(self.menuBar)
 
     def __initToolbar(self):
@@ -75,14 +86,16 @@ class MainWindow(QMainWindow):
         self.addToolBar(Qt.RightToolBarArea, self.rightToolBar)
 
     def __initMoveList(self):
-        self.moveList = QPlainTextEdit()
         self.moveList.setCursorWidth(0)
+        self.moveList.setFontPointSize(16)
         self.moveList.setPlaceholderText('No moves yet')
+        self.moveList.setAlignment(Qt.AlignCenter)
         self.moveList.setReadOnly(True)
         self.rightToolBar.addWidget(self.moveList)
 
     def changeTurns(self):
         self.currentPlayer = not self.currentPlayer
+        self.board.turn = self.currentPlayer
 
     # currently returns window size, will have to change if we add a toolbar
     def cbSize(self):
@@ -91,6 +104,18 @@ class MainWindow(QMainWindow):
     def marginSize(self):
         cbWidth, cbHeight = self.cbSize()
         return floor(1/24 * cbWidth), floor(1/24 * cbHeight)
+
+    def undoMove(self):
+        try:
+            self.board.pop()
+        except IndexError as _:
+            return  # no moves have been made yet
+        self.moveList.undo()
+        self.moveList.setAlignment(Qt.AlignCenter)
+        self.changeTurns()
+        self.lastMove = self.board.peek() if self.board.move_stack else None
+        self.moveList.ensureCursorVisible()
+        self.setSquareAndPiece(None, None)
 
     def getSquareAndPiece(self, x, y):
         square = chess.square(x, y)
@@ -115,6 +140,20 @@ class MainWindow(QMainWindow):
         file = int((event.x() - marginX) / sqWidth)
         rank = 7 - int((event.y() - marginY) / sqHeight)
         return file, rank
+
+    def getMoveText(self, move, piece):
+        uci = move.uci()
+        return '{} {} — {}'.format(
+            piece.unicode_symbol(invert_color=True),
+            uci[:2],
+            uci[2:]
+        )
+
+    def updateMoveList(self, move):
+        moveText = self.getMoveText(
+            move, self.board.piece_at(move.from_square))
+        self.moveList.insertPlainText('{}\n'.format(moveText))
+        self.moveList.ensureCursorVisible()
 
     def paintEvent(self, event):
         self.boardWidget.load(chess.svg.board(
