@@ -18,9 +18,17 @@ def mouseClick(self, event):
                 # make a move
                 move = chess.Move(
                     from_square=self.sqSelected,
-                    to_square=square  # ,
-                    # promotion=self.pieceSelected
+                    to_square=square
                 )
+                # determine if move is a promotion
+                if self.board.piece_type_at(self.sqSelected) == chess.PAWN and rank in [0, 7] and not move.promotion:
+                    self.promotionWindow.show()
+                    # TODO: listen for selection, then promote piece
+                    move = chess.Move(
+                        move.from_square,
+                        move.to_square,
+                        chess.QUEEN
+                    )
                 # if move is legal
                 if move in self.board.legal_moves:
                     self.board.push(move)
