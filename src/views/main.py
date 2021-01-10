@@ -99,8 +99,7 @@ class MainWindow(QMainWindow):
 
     def setSquareAndPiece(self, square, piece):
         self.sqSelected = square
-        # self.pieceSelected = self.board.piece_at(
-        #     self.sqSelected)
+        self.pieceSelected = piece
         self.update()
 
     def squareSize(self):
@@ -124,7 +123,7 @@ class MainWindow(QMainWindow):
             lastmove=self.lastMove,
             check=self.checkSquares,
             squares=chess.SquareSet.from_square(
-                self.sqSelected) if self.sqSelected else chess.SquareSet()  # ,
+                self.sqSelected) if self.sqSelected is not None else chess.SquareSet()  # ,
             # selected=self.sqSelected  # ,
             # colors={
             #     'square light lastmove': '#ffce9e99',

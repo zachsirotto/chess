@@ -9,7 +9,7 @@ def mouseClick(self, event):
             # chess.sqare.mirror() if white is on top
             file, rank = self.getRankAndFile(event)
             # if sq already selected
-            if self.sqSelected:
+            if self.sqSelected is not None:
                 # reselect piece if necessary
                 square, piece = self.getSquareAndPiece(file, rank)
                 if piece and piece.color == self.currentPlayer:
